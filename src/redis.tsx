@@ -24,6 +24,13 @@ export async function get_redis(): Promise<Redis> {
   return _REDIS;
 }
 
+export async function clear_redis() {
+  const redis = await get_redis();
+  for (var key in _TYPES) {
+    await redis.del(key);
+  }
+}
+
 async function generate_herder_id(redis: Redis, name: string): Promise<string> {
   let id = name;
   for (var i = 1; ; i++) {
