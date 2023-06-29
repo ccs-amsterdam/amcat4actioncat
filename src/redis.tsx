@@ -4,8 +4,8 @@ import { Herder, Job } from "./interfaces";
 const KEY_HERDERS = "amcat4actioncat__herders";
 const KEY_JOBS = "amcat4actioncat__jobs";
 const _TYPES = {
-  KEY_HERDERS: "hash",
-  KEY_JOBS: "list",
+  [KEY_HERDERS]: "hash",
+  [KEY_JOBS]: "list",
 };
 
 let _REDIS: Redis | void;
@@ -27,9 +27,12 @@ export async function get_redis(): Promise<Redis> {
 export async function clear_redis() {
   const redis = await get_redis();
   for (var key in _TYPES) {
+    console.debug(key);
     await redis.del(key);
   }
 }
+
+/* Herders */
 
 async function generate_herder_id(redis: Redis, name: string): Promise<string> {
   let id = name;
@@ -62,6 +65,8 @@ export async function delete_herder(id: string): Promise<boolean> {
   const redis = await get_redis();
   return (await redis.hdel(KEY_HERDERS, id)) > 0;
 }
+
+/* Job CRUD */
 
 export async function add_job(job: Job) {
   const redis = await get_redis();
